@@ -191,6 +191,40 @@ class Btb extends CI_Controller {
 		#Redirecting to List BTB
 		redirect('btb/list_btb');
 	}
+	
+	function detail_btb($btb_id)
+	{
+		# Date for btb search
+		$date = mdate('%Y%m%d',time());
+		
+		# Page Data
+		$data['nav_btb'] = 'yes';
+		$data['page'] = 'input data barang';
+		
+		# Search BTB last number
+		$last_number = $this->btb_model->get_data_btb_by_id($btb_id);
+		foreach ($last_number as $row)
+			{
+				$data['btb_number'] = $row['btb_nomor'];
+			}
+		
+		# Page Content
+		$data['jenis_barang'] = $this->btb_model->get_jenis_barang();
+		$data['ktg_barang'] = $this->btb_model->get_katagori_barang();
+		$data['data_barang'] = $this->btb_model->get_data_barang($data['btb_number']);
+		
+		# view call
+		$this->load->view('btb/index', $data);
+	}
+	
+	function delete_btb($btb_id)
+	{
+		# Update data to DB
+		$this->btb_model->delete_data_btb($btb_id);
+		
+		#Redirecting to List BTB
+		redirect('btb/list_btb');
+	}
 }
 
 /* End of file welcome.php */

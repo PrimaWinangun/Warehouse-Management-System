@@ -46,6 +46,7 @@ class Btb_model extends CI_Model
 			SELECT * FROM wms_btb AS btb
 			LEFT JOIN (SELECT max(id_smu),smu_btb, smu_nomor FROM wms_smu GROUP BY smu_btb) AS smu ON btb.btb_nomor = smu.smu_btb
 			WHERE btb_date = '$date'
+			AND btb_status != 'void'
 			LIMIT $offset , $num
 		");
 		$btb = $this->db->query($query);
@@ -58,6 +59,7 @@ class Btb_model extends CI_Model
 			SELECT * FROM wms_btb AS btb
 			LEFT JOIN (SELECT max(id_smu),smu_btb, smu_nomor FROM wms_smu GROUP BY smu_btb) AS smu ON btb.btb_nomor = smu.smu_btb
 			WHERE btb.id_btb = '$btb_id'
+			AND btb.btb_status != 'void'
 		");
 		$btb = $this->db->query($query);
 		return $btb->result_array();
@@ -144,5 +146,19 @@ class Btb_model extends CI_Model
 		$data_smu = array('smu_nomor' => $this->input->post('smu_ap').$this->input->post('smu_sn').$this->input->post('smu_cd'));
 		$this->db->where('smu_btb', $this->input->post('btb_nomor'));
 		$this->db->update('wms_smu', $data_smu);
+	}
+	
+	function delete_data_btb($btb_id)
+	{
+		$btb_data = array(
+			'btb_status' => 'VOID',
+			'btb_update_by' => 'admin'
+		);
+		$this->db->where('id_btb', $btb_id);
+		$this->db->update('wms_btb', $btb_data);
+		
+		$data_smu = array(
+			'smu_nomor' => $this->input->post('smu_ap').$this->input->post('smu_sn').$this->input->post('smu_cd')
+			);
 	}
 }

@@ -85,10 +85,17 @@
 				<td><center><?php echo $row_btb['smu_nomor']?></td>
 				<td><center><?php echo $row_btb['btb_tujuan']?></td>
 				<td><center><?php echo $status?></td>
-				<td>
+				<td><center>
 					<?php
+					#delete btb
+					echo anchor('btb/delete_btb/'.$row_btb['id_btb'], img(array('src'=>"admin/images/icons/control/16/busy.png", 'alt'=>'Delete BTB', 'title'=>'Delete BTB')));
+					echo '&nbsp';
 					#edit btb
-					echo anchor('btb/edit_btb/'.$row_btb['id_btb'], 'edit btb');
+					echo anchor('btb/edit_btb/'.$row_btb['id_btb'], img(array('src'=>"admin/images/icons/control/16/edit.png", 'alt'=>'Edit BTB', 'title'=>'Edit BTB')));
+					echo '&nbsp';
+					#detail btb
+					echo anchor('btb/detail_btb/'.$row_btb['id_btb'], img(array('src'=>"admin/images/icons/control/16/order.png", 'alt'=>'Detail BTB', 'title'=>'Detail BTB')));
+					echo '&nbsp';
 					?>
 				</td>
             </tr> 

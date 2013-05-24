@@ -5,7 +5,16 @@
 			$attributes = array('class'=>'form','id'=>'wizard3');
 			echo form_open('btb/insert_data_barang/', $attributes);
 			echo form_hidden('btb', $btb_number);
-			echo form_hidden('smu', $this->uri->segment(3));?>
+			if ($this->uri->segment(2) == 'detail_btb')
+			{
+				foreach ($data_barang as $row_barang)
+				{
+					$nomor_smu = $row_barang['smu_nomor'];
+				}
+				echo form_hidden('smu', $nomor_smu);
+			} else {
+				echo form_hidden('smu', $this->uri->segment(3));
+			}?>
                 <fieldset class="step" id="w2first">
                     <h1></h1>
 					<div class="formRow">
@@ -115,7 +124,14 @@
 </div>
 <div class = "twoOne2">
 	<div class="widget">
-	 <div class="title"><img src="<?php echo base_url()?>images/icons/dark/pencil.png" alt="" class="titleIcon" /><h6>SMU No. <?php echo substr($this->uri->segment(3),0,3).'-'.substr($this->uri->segment(3),3,7).'-'.substr($this->uri->segment(3),10,1);?></h6></div>
+	 <div class="title"><img src="<?php echo base_url()?>images/icons/dark/pencil.png" alt="" class="titleIcon" /><h6>SMU No. <?php 
+		if (strlen($this->uri->segment(3)) != 11)
+		{
+			echo substr($nomor_smu,0,3).'-'.substr($nomor_smu,3,7).'-'.substr($nomor_smu,10,1);
+		}else{
+			echo substr($this->uri->segment(3),0,3).'-'.substr($this->uri->segment(3),3,7).'-'.substr($this->uri->segment(3),10,1);
+		}
+	 ?></h6></div>
 	<table cellpadding="0" cellspacing="0" width="100%" class="sTable">
         <tfoot>
 			<tr><td colspan=9></td></tr>
@@ -123,11 +139,11 @@
 		<thead>
 			<tr>
 				<td>No</td>
-				<td>Berat Timbang</td>
-				<td>Koli</td>
 				<td>Panjang</td>
 				<td>Lebar</td>
 				<td>Tinggi</td>
+				<td>Koli</td>
+				<td>Berat Timbang</td>
 				<td>Berat Volume</td>
 				<td>Berat Dibayar</td>
 				<td>Action</td>
@@ -139,6 +155,9 @@
 		{
 		$num = 1;
 		$total_bayar = 0;
+		$total_berat = 0;
+		$total_koli = 0;
+		$total_volume = 0;
 		$v_minus = 0;
 		foreach ($data_barang as $row_barang)
 		{
@@ -160,19 +179,27 @@
 			}?>
 			<tr>
 				<td><center><?php echo $num++; ?></td>
-				<td><center><?php echo $row_barang['smu_berat_timbang']?></td>
-				<td><center><?php echo $row_barang['smu_jum_koli']?></td>
 				<td><center><?php echo $row_barang['smu_panjang']?></td>
 				<td><center><?php echo $row_barang['smu_lebar']?></td>
 				<td><center><?php echo $row_barang['smu_tinggi']?></td>
+				<td><center><?php echo $row_barang['smu_jum_koli']?></td>
+				<td><center><?php echo $row_barang['smu_berat_timbang']?></td>
 				<td><center><?php echo round($voluminus,2)?></td>
 				<td><center><?php echo $bayar;?></td>
 				<td>Action</td>
             </tr> 
 		<?php 
+		$total_berat = $total_berat + $row_barang['smu_berat_timbang'];
+		$total_koli  = $total_koli + $row_barang['smu_jum_koli'];
+		$total_volume  = $total_volume + round($voluminus,2);
 		$total_bayar = $total_bayar + $bayar;} ?>
 		<tr>
-			<td colspan="7"><p align="right">Total : </p></td><td><center><?php echo $total_bayar;?></td><td></td>
+			<td colspan="4"><div align="right"><b>Total : </div></td>
+			<td><center><b><?php echo $total_koli. '&nbsp pcs';?></td>
+			<td><center><b><?php echo $total_berat. '&nbsp kg';?></td>
+			<td><center><b><?php echo $total_volume . '&nbsp pcs';?></td>
+			<td><center><b><?php echo $total_bayar;?></td>
+			<td></td>
 		</tr><?php }?>
         </tbody>
     </table>
