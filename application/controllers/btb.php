@@ -205,9 +205,10 @@ class Btb extends CI_Controller {
 		$last_number = $this->btb_model->get_data_btb_by_id($btb_id);
 		foreach ($last_number as $row)
 			{
+				$data['id_btb'] = $row['id_btb'];
 				$data['btb_number'] = $row['btb_nomor'];
+				$data['btb_status'] = $row['btb_status'];
 			}
-		
 		# Page Content
 		$data['jenis_barang'] = $this->btb_model->get_jenis_barang();
 		$data['ktg_barang'] = $this->btb_model->get_katagori_barang();
@@ -222,10 +223,20 @@ class Btb extends CI_Controller {
 		# Update data to DB
 		$this->btb_model->delete_data_btb($btb_id);
 		
-		#Redirecting to List BTB
+		# Redirecting to List BTB
 		redirect('btb/list_btb');
 	}
+	
+	function delete_smu($smu_id)
+	{
+		# Delete data SMU
+		$this->btb_model->delete_data_smu($smu_id);
+		
+		# Redirecting to last BTB
+		redirect('btb/detail_btb/'.$this->uri->segment(4));
+	}
 }
+
 
 /* End of file welcome.php */
 /* Location: ./application/controllers/welcome.php */

@@ -2,6 +2,14 @@
 	<div class="widget">
             <div class="title"><img src="<?php echo base_url()?>images/icons/dark/pencil.png" alt="" class="titleIcon" /><h6>BTB No. <?php echo $btb_number;?></h6></div>
 			<?php 
+			$btb_status = 'yes';
+			if (isset($btb_status))
+			{
+				if (substr($btb_status,-7,7) == 'PENDING' )
+				{
+					$btb_status = 'no';
+				}
+			}
 			$attributes = array('class'=>'form','id'=>'wizard3');
 			echo form_open('btb/insert_data_barang/', $attributes);
 			echo form_hidden('btb', $btb_number);
@@ -146,7 +154,8 @@
 				<td>Berat Timbang</td>
 				<td>Berat Volume</td>
 				<td>Berat Dibayar</td>
-				<td>Action</td>
+				<?if ($btb_status == 'yes'){	echo '<td>Action</td>'; }
+				?>
 			</tr>
 		</thead>
 		<tbody>
@@ -186,7 +195,8 @@
 				<td><center><?php echo $row_barang['smu_berat_timbang']?></td>
 				<td><center><?php echo round($voluminus,2)?></td>
 				<td><center><?php echo $bayar;?></td>
-				<td>Action</td>
+				<?if ($btb_status == 'yes'){ ?>
+				<td><center><?php echo anchor('btb/delete_smu/'.$row_barang['id_smu'].'/'.$id_btb, img(array('src'=>"admin/images/icons/control/16/busy.png", 'alt'=>'Delete SMU', 'title'=>'Delete SMU'))); ?></td> <?php } ?>
             </tr> 
 		<?php 
 		$total_berat = $total_berat + $row_barang['smu_berat_timbang'];
