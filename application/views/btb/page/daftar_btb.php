@@ -15,7 +15,7 @@
 							'id'   => 'tgl_btb',
 							'style'=> 'width:50%',
 							'class'=> 'maskDate',
-							'value'=> mdate('%d/%m/%Y', time())
+							'value'=> mdate('%d-%m-%Y',strtotime($time))
 						);
 						echo form_input($tgl); echo '<h7>&nbsp dd/mm/YYYY</h7>';
 						?>
@@ -58,8 +58,18 @@
 			if (($this->uri->segment(2) == 'list_btb') && ($this->uri->segment(3) == NULL))
 			{
 				$num = 1;
-			}else{
+			}
+			elseif (($this->uri->segment(2) == 'search_btb') && ($this->uri->segment(4) == NULL))
+			{
+				$num = 1;
+			}
+			elseif (($this->uri->segment(2) == 'list_btb') && ($this->uri->segment(3) != NULL))
+			{
 				$num = $this->uri->segment(3)+1;
+			}
+			elseif ((($this->uri->segment(2) == 'search_btb') && ($this->uri->segment(4) != NULL)))
+			{
+				$num = $this->uri->segment(4)+1;
 			}
 		foreach ($btb_list as $row_btb)
 		{
@@ -75,7 +85,12 @@
 				<td><center><?php echo $row_btb['smu_nomor']?></td>
 				<td><center><?php echo $row_btb['btb_tujuan']?></td>
 				<td><center><?php echo $status?></td>
-				<td>Action</td>
+				<td>
+					<?php
+					#edit btb
+					echo anchor('btb/edit_btb/'.$row_btb['id_btb'], 'edit btb');
+					?>
+				</td>
             </tr> 
 		<?php 
 		}

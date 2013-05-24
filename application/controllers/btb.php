@@ -136,6 +136,61 @@ class Btb extends CI_Controller {
 		# view call
 		$this->load->view('btb/index', $data);
 	}
+	
+	function search_btb()
+	{
+		# Date for btb search
+		if ($this->input->post('tgl_btb') != NULL)
+		{
+			$data['time'] = mdate('%Y-%m-%d',strtotime(str_replace('/','-',$this->input->post('tgl_btb'))));
+		} else {
+			$data['time'] = $this->uri->segment(3);
+		}
+		
+		# Page Data
+		$data['nav_btb'] = 'yes';
+		$data['view_daftar_btb'] = 'class="this"';
+		$data['page'] = 'daftar data btb';
+		
+		# Pagination Config
+		$config['base_url'] = base_url().'index.php/btb/search_btb/'.$data['time']; //set the base url for pagination
+		$config['total_rows'] = $this->btb_model->countBTB($data['time']); //total rows
+		$config['per_page'] = 10; //the number of per page for pagination
+		$config['uri_segment'] = 4; //see from base_url. 3 for this case
+		$this->pagination->initialize($config);
+		$page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+		
+		# Page Content
+		$data['btb_list'] = $this->btb_model->get_btb_list($data['time'], $config['per_page'], $page);
+		
+		# view call
+		$this->load->view('btb/index', $data);
+	}
+	
+	function edit_btb($btb_id)
+	{
+		# Page Data
+		$data['nav_btb'] = 'yes';
+		$data['page'] = 'input btb';
+		
+		# Page Content
+		$data['airline_list'] = $this->btb_model->get_airline_list();
+		$data['agent_list'] = $this->btb_model->get_agent_list();
+		$data['destination_list'] = $this->btb_model->get_destination_list();
+		$data['data_btb'] = $this->btb_model->get_data_btb_by_id($btb_id);
+		
+		# view call
+		$this->load->view('btb/index', $data);
+	}
+	
+	function edit_data_btb($btb_id)
+	{
+		# Update data to DB
+		$this->btb_model->update_data_btb($btb_id);
+		
+		#Redirecting to List BTB
+		redirect('btb/list_btb');
+	}
 }
 
 /* End of file welcome.php */

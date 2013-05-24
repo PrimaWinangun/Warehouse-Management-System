@@ -52,6 +52,17 @@ class Btb_model extends CI_Model
 		return $btb->result_array();
 	}
 	
+	function get_data_btb_by_id($btb_id)
+	{
+		$query = ("
+			SELECT * FROM wms_btb AS btb
+			LEFT JOIN (SELECT max(id_smu),smu_btb, smu_nomor FROM wms_smu GROUP BY smu_btb) AS smu ON btb.btb_nomor = smu.smu_btb
+			WHERE btb.id_btb = '$btb_id'
+		");
+		$btb = $this->db->query($query);
+		return $btb->result_array();
+	}
+	
 	function countBTB($date)
 	{
 		$this->db->where('btb_date', $date);
@@ -116,5 +127,22 @@ class Btb_model extends CI_Model
 		);
 		
 		$this->db->insert('wms_smu',$data_barang);
+	}
+	
+	function update_data_btb($btb_id)
+	{
+		$btb_data = array(
+			'btb_airline' => $this->input->post('airline'),
+			'btb_agent' => $this->input->post('agent'),
+			'btb_tujuan' => $this->input->post('destination'),
+			'btb_date' => mdate('%Y-%m-%d',strtotime($this->input->post('date'))),
+			'btb_update_by' => 'admin'
+		);
+		$this->db->where('id_btb', $btb_id);
+		$this->db->update('wms_btb', $btb_data);
+		
+		$data_smu = array('smu_nomor' => $this->input->post('smu_ap').$this->input->post('smu_sn').$this->input->post('smu_cd'));
+		$this->db->where('smu_btb', $this->input->post('btb_nomor'));
+		$this->db->update('wms_smu', $data_smu);
 	}
 }
